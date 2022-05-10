@@ -5,21 +5,24 @@ interface IRobot {
 
 export class Robot implements IRobot {
   name: string;
-  static usedNames: string[] = [];
+  static usedNames = new Set<string>();
   static releaseNames() {
-    return null;
+    this.usedNames.clear();
   }
   constructor() {
-    let newName;
-    do {
-      newName = this.randomName;
-    } while (Robot.usedNames.includes(newName));
-    Robot.usedNames.push(newName);
-    this.name = newName;
+    this.name = this.uniqueRandomName;
   }
 
   resetName() {
-    this.name = this.randomName;
+    this.name = this.uniqueRandomName;
+  }
+  private get uniqueRandomName() {
+    let newName;
+    do {
+      newName = this.randomName;
+    } while (Robot.usedNames.has(newName));
+    Robot.usedNames.add(newName);
+    return newName;
   }
 
   private get randomName() {
